@@ -1,0 +1,43 @@
+/*样式重置*/
+/*将标签默认的间距设为0*/
+body,ul,p,h1,h2,h3,h4,h5,h6,dl,dd,input,select,form{
+    margin:0;padding:0;
+}
+/*去掉默认的字体大小（之后在body里面设置字体大小，h标签就会继承body的字体大小）*/
+h1,h2,h3,h4,h5,h6{
+    font-size:100%;
+}
+/*去掉默认的项目图标*/
+ul{
+    list-style:none;
+}
+/*去掉默认的倾斜字体*/
+em{
+    font-style:normal;
+}
+/*去掉默认的下划线*/
+a{
+    text-decoration:none;
+}
+/*在IE浏览器上a标签包着的img标签会生成一个边框，去掉*/
+img{
+    border:none;
+}
+/*放置一些重要的类*/
+/*清除margin-top塌陷和清除浮动*/
+.clearfix:before,.clearfix:after{
+    content:"";
+    display:table;
+}
+.clearfix:after{
+    clear:both;
+}
+.clearfix{
+    zoom:1;
+}
+.fl{
+    float:left;
+}
+.fr{
+    float:right;
+}

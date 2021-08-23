@@ -1,0 +1,50 @@
+{% extends 'base_top.html' %}
+{% block content %}
+		<div class="main_con clearfix">
+			<div class="left_menu_con fl clearfix">
+				<ul>
+					<a href="/user/info/"><li>个人信息</li></a>
+					<a href="/user/order/"><li>全部订单</li></a>
+					<a href="/user/site/"><li class="active">收货地址</li></a>
+					<a href="user_center_site.html"><li>我的收藏</li></a>
+					<a href="user_center_site.html"><li>最近浏览</li></a>
+					<a href="user_center_site.html"><li>联系我们</li></a>
+				</ul>
+			</div>
+			<div class="right_content clearfix">
+				<div class="info_con clearfix">
+					<h3 class="common_title">收货地址</h3>
+                    <div class="site_con">
+                        <dl>
+                            <dt>当前地址：</dt>
+                            <dd>{{ user.uaddress }}（{{ user.ushou }}收）{{ user.uphone }}</dd>
+                        </dl>
+                    </div>
+                    <h3 class="common_title">编辑地址</h3>
+                    <div class="site_con2 fl">
+                        <form action="/user/site/" method="post">
+                            {% csrf_token %}
+                            <div class="form_group">
+                                <label>收件人：</label>
+                                <input type="text" name="ushou" value="{{ user.ushou }}">
+                            </div>
+                            <div class="form_group2">
+                                <label>详细地址：</label>
+                                <textarea class="site_area" name="uaddress">{{ user.uaddress }}</textarea>
+                            </div>
+                            <div class="form_group">
+                                <label>邮编：</label>
+                                <input type="text" name="uyoubian" value="{{ user.uyoubian }}">
+                            </div>
+                            <div class="form_group">
+                                <label>手机：</label>
+                                <input type="text" name="uphone" value="{{ user.uphone }}">
+                            </div>
+                            <input type="submit" name="" value="提交" class="info_submit fl">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
