@@ -1,9 +1,14 @@
 from django.shortcuts import render,redirect # redirect重定向
 from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from .models import *
+from cb_goods.models import *
 from hashlib import sha1
+import random
 
 # Create your views here.
+def index(request):
+    return render(request,'cb_user/index.html') # 显示首页（logo页）
+
 def register(request):
     return render(request,'cb_user/register.html') # 显示注册页面
 
@@ -60,7 +65,7 @@ def login_handle(request):
     # 根据用户名查询对象
     # 使用filter而不使用get的原因：如果未找到，get会产生异常
     users = UserInfo.objects.filter(uname=uname)
-    # 查到用户名时：判断密码是否正确，正确则跳转到用户中心
+    # 查到用户名时：判断密码是否正确，正确则跳转到商品首页
     if len(users) == 1:
         # 密码加密
         s1 = sha1()
@@ -68,7 +73,7 @@ def login_handle(request):
         # users[0]：使用filter得到的列表中的第一个元素即用户名（对象）。users[0].upwd：获取用户名对象的upwd属性的值
         if s1.hexdigest() == users[0].upwd:
             # 不使用redirect而使用HttpResponseRedirect的原因：redirect不能设置cookie信息
-            red = HttpResponseRedirect('/user/info/')
+            red = HttpResponseRedirect('/user/index_list/')
             # 记住用户名（实际操作是存到cookie里）：设置cookie
             if jizhu != 0:
                 red.set_cookie('uname',uname)
@@ -92,16 +97,28 @@ def login_handle(request):
         context = {'title':'用户登录','error_name':1,'error_pwd':0,'uname':uname,'upwd':upwd}
         return render(request,'cb_user/login.html',context) # 显示登录页面
 
+def index_list(request):
+    # 默认随机查询一个商品分类的最新的2条（按id）、最热的10条数据（按gclick）
+    typelist = TypeInfo.objects.all()
+    t = random.randint(0,len(typelist)-1)
+    type0 = typelist[t].goodsinfo_set.order_by('-id')[0:2]
+    type01 = typelist[t].goodsinfo_set.order_by('-gclick')[0:10]
+    context = {'title':'首页','page_name':1,
+               'type0':type0,'type01':type01,
+               'type':typelist[t]
+               } # 把page_name变量的值1传给模板是为了判断顶部栏与用户中心页面的区别，从而显示与用户中心页面不同的部分
+    return render(request,'cb_goods/index_list.html',context) # 显示商品首页
+
 def info(request):
     user_email = UserInfo.objects.get(id=request.session['user_id']).uemail
     # 数据库中的uaddress和uphone字段的默认值是''，所以不会报错
     user_address = UserInfo.objects.get(id=request.session['user_id']).uaddress
     user_phone = UserInfo.objects.get(id=request.session['user_id']).uphone
-    context = {'title':'用户中心','user_email':user_email,'user_name':request.session['user_name'],'user_address':user_address,'user_phone':user_phone}
+    context = {'title':'用户中心','user_email':user_email,'user_name':request.session['user_name'],'user_address':user_address,'user_phone':user_phone,'page_name':2}
     return render(request,'cb_user/user_center_info.html',context) # 显示用户中心页面
 
 def order(request):
-    context = {'title':'用户中心'}
+    context = {'title':'用户中心','page_name':2}
     return render(request,'cb_user/user_center_order.html',context) # 显示用户订单页面
 
 def site(request):
@@ -118,6 +135,6 @@ def site(request):
         user.uphone = post.get('uphone')
         # 保存到数据库中
         user.save()
-    context = {'title':'用户中心','user':user}
+    context = {'title':'用户中心','user':user,'page_name':2}
     return render(request,'cb_user/user_center_site.html',context) # 显示用户地址页面
 

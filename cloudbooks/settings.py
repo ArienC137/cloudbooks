@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cb_user',
+    'cb_goods',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +109,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+from django.utils.translation import gettext_lazy as _
+LANGUAGES = [
+    ('zh-Hans',_('Chinese')),
+]
+
+LANGUAGE_CODE = 'zh-Hans' # LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -126,3 +132,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static'),
 ]
+# 开发阶段上传文件的目录
+MEDIA_ROOT = os.path.join(BASE_DIR,'static')
+# 布署之后上传文件的目录：文件的路径会变更为/var/www/cloudbooks/static
+# MEDIA_ROOT = '/var/www/cloudbooks/static'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'silver',
+    'width': 600,
+    'height': 400,
+} # 只决定了admin管理站点中的效果

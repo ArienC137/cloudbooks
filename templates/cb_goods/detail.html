@@ -1,0 +1,141 @@
+{% extends 'cb_goods/base.html' %}
+{% block head %}
+<script type="text/javascript">
+	// 点击“+”号时执行
+	function add(){
+		num = parseFloat($('.num_show').val());
+		$('.num_show').val(num+1);
+		$('.num_show').blur();
+	}
+	// 点击“-”号时执行
+	function minus() {
+		num = parseFloat($('.num_show').val());
+		if(num>1){
+			$('.num_show').val(num-1);
+			$('.num_show').blur();
+		}
+	}
+	// 失去焦点时，进行计算
+	$(function(){
+		$('.num_show').blur(function(){
+			num = parseFloat($('.num_show').val());
+			price = parseFloat($('#gprice').text());
+			if(num<=0){
+				alert('商品不能少于1件！');
+			}
+			else{
+				total = num*price;
+				$('#gtotal').text(total.toFixed(2)+'元');
+			}
+		});
+	});
+	// $(function(){
+	// 	var $add_x = $('#add_cart').offset().top;
+	// 	var $add_y = $('#add_cart').offset().left;
+	// 	var $to_x = $('#show_count').offset().top;
+	// 	var $to_y = $('#show_count').offset().left;
+	// 	$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'});
+	// 	$('#add_cart').click(function(){
+	// 		$(".add_jump").stop().animate({
+	// 			'left':$to_y+7,
+	// 			'top':$to_x+7},
+	// 			"fast",function(){
+	// 			$(".add_jump").fadeOut('fast',function(){
+	// 				$('#show_count').html(2);
+	// 			});
+	// 		});
+	// 	});
+	// });
+</script>
+{% endblock head %}
+{% block content2 %}
+		<div class="goods_detail_con clearfix">
+			<div class="goods_detail_pic fl"><img src="/static/{{ g.gpic }}"></div>
+			<div class="goods_detail_list fr">
+				<h1>{{ g.gtitle }}</h1>
+				<h2>
+					<span class="sub_title">{{ g.gbrief }}</span>
+				</h2>
+				<div class="author_bar">
+					<h3>作者：<a href="#">{{ g.gauthor }}</a></h3>
+					<h3>出版社：<a href="#">{{ g.gpublish }}</a></h3>
+					<h3>出版时间：{{ g.gpubtime }}</h3>
+				</div>
+				<div class="price_bar">
+					<span class="show_pirce">¥<em id="gprice">{{ g.gsellprice }}</em></span>
+					<span class="discount_price">({{ g.gdiscount }}折)</span>
+					<div class="set_price">定价：<del>¥{{ g.gprice }}</del></div>
+				</div>
+				<div class="goods_num clearfix">
+					<div class="num_name fl">数 量：</div>
+					<div class="num_add fl">
+						<input type="text" class="num_show fl" value="1">
+						<a href="javascript:add();" class="add fr">+</a>
+						<a href="javascript:minus();" class="minus fr">-</a>
+					</div>
+				</div>
+				<div class="total">总价：<em id="gtotal">{{ g.gsellprice }}元</em></div>
+				<div class="operate_btn">
+					<a href="javascript:;" class="buy_btn">立即购买</a>
+					<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+					<a href="javascript:;" class="add_star" id="add_star">加入收藏</a>
+				</div>
+			</div>
+		</div>
+		<div class="show_content clearfix">
+			<ul class="detail_tab clearfix">
+				<a href="#"><li class="active">商品详情</li></a>
+				<a href="#"><li>评论</li></a>
+			</ul>
+			<div class="tab_content">
+				<dl>
+					<dt>内容简介：</dt>
+					<dd>{{ g.gcontent|striptags }}</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="recommend_con clearfix">
+			<div class="wrap fl clearfix">
+				<div class="sell_well_goods">
+					<a href="#"><h3>· 畅销书榜</h3></a>
+						<ul>
+							{% for sell in sells %}
+							<li>
+								<a href="/{{ sell.id }}"><img src="/static/{{ sell.gpic }}"></a>
+								<h4><a href="/{{ sell.id }}">{{ sell.gtitle }}</a></h4>
+								<div class="price">￥{{ sell.gsellprice }}</div>
+							</li>
+							{% endfor %}
+						</ul>
+				</div>
+			</div>
+			<div class="wrap fl clearfix">
+				<div class="classic_goods clearfix">
+					<a href="#"><h3>· 经典书榜</h3></a>
+						<ul>
+							{% for class in classes %}
+							<li>
+								<a href="/{{ class.id }}"><img src="/static/{{ class.gpic }}"></a>
+								<h4><a href="/{{ class.id }}">{{ class.gtitle }}</a></h4>
+								<div class="price">￥{{ class.gsellprice }}</div>
+							</li>
+							{% endfor %}
+						</ul>
+				</div>
+			</div>
+			<div class="wrap fl clearfix">
+				<div class="discount_goods clearfix">
+					<a href="#"><h3>· 特价书榜</h3></a>
+						<ul>
+							{% for dis in disc %}
+							<li>
+								<a href="/{{ dis.id }}"><img src="/static/{{ dis.gpic }}"></a>
+								<h4><a href="/{{ dis.id }}">{{ dis.gtitle }}</a></h4>
+								<div class="price">￥{{ dis.gsellprice }}</div>
+							</li>
+							{% endfor %}
+						</ul>
+				</div>
+			</div>
+		</div>
+{% endblock content2 %}

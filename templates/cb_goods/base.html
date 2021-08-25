@@ -1,0 +1,75 @@
+{% extends 'base_foot.html' %}
+{% block content2 %}
+        <div class="navbar_con">
+			<div class="navbar clearfix">
+				<div class="subnav_con fl">
+					<h1>全部商品分类</h1>
+					<span></span>
+					<ul class="subnav">
+						<li><a href="/list1_1_1/" class="child">童书</a></li>
+						<li><a href="/list2_1_1/" class="novel">小说</a></li>
+						<li><a href="/list3_1_1/" class="social">人文社科</a></li>
+						<li><a href="/list4_1_1/" class="encourage">励志</a></li>
+						<li><a href="/list5_1_1/" class="science">科技</a></li>
+						<li><a href="/list6_1_1/" class="original">英文原版</a></li>
+					</ul>
+				</div>
+				<ul class="navlist fl">
+					<li><a href="/classify{{ typeinfo.id }}_1_1/"
+					{% if classify == '1' %} class="active"
+					{% endif %}
+					>畅销书榜</a></li>
+					<li class="interval">|</li>
+					<li><a href="/classify{{ typeinfo.id }}_1_2/"
+					{% if classify == '2' %} class="active"
+					{% endif %}
+					>经典书榜</a></li>
+					<li class="interval">|</li>
+					<li><a href="/classify{{ typeinfo.id }}_1_3/"
+					{% if classify == '3' %} class="active"
+					{% endif %}
+					>特价书榜</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="breadcrumb">
+			<a href="#">全部分类</a>
+			<span>></span>
+			<a href="/list{{ typeinfo.id }}_1_1/">{{ typeinfo }}</a>
+		</div>
+		<div class="main_wrap clearfix">
+			<div class="l_wrap fl clearfix">
+				<div class="new_goods">
+					<a href="#"><h3>新品推荐</h3></a>
+					<ul>
+						{% for new in news %}
+						<li>
+							<a href="/{{ new.id }}/"><img src="/static/{{ new.gpic }}"></a>
+							<h4><a href="/{{ new.id }}/">{{ new.gtitle }}</a></h4>
+							<div class="price">￥{{ new.gsellprice }}
+								<span class="fixed_price"><del>￥{{ new.gprice }}</del></span>
+							</div>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			<div class="r_wrap fr clearfix">
+{% block detail %}{% endblock detail %}
+				<ul class="goods_type_list clearfix">
+					{% for g in page %}
+					<li>
+						<a href="/{{ g.id }}/"><img src="/static/{{ g.gpic }}"></a>
+						<h4><a href="/{{ g.id }}/">{{ g.gtitle }}</a></h4>
+						<p class="author">
+							<span>{{ g.gauthor }}</span>
+						</p>
+						<p class="price">
+							<span class="price_l">￥{{ g.gsellprice }}</span>
+							<span class="price_r"><del>￥{{ g.gprice }}</del></span>
+						</p>
+					</li>
+					{% endfor %}
+				</ul>
+{% block detail2 %}{% endblock detail2 %}
+{% endblock content2 %}

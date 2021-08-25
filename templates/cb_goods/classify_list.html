@@ -1,0 +1,20 @@
+{% extends 'cb_goods/base.html' %}
+{% block detail2 %}
+				<div class="pagenation">
+					{% if page.has_previous %}
+					<a href="/classify{{ typeinfo.id }}_{{ page.previous_page_number }}_{{ classify }}/"><上一页</a>
+					{% endif %}
+					{% for pindex in paginator.page_range %}
+					{% if pindex == page.number %}
+					<a href="#" class="active">{{ pindex }}</a>
+					{% else %}
+					<a href="/classify{{ typeinfo.id }}_{{ pindex }}_{{ classify }}/">{{ pindex }}</a>
+					{% endif %}
+					{% endfor %}
+					{% if page.has_next %}
+					<a href="/classify{{ typeinfo.id }}_{{ page.next_page_number }}_{{ classify }}/">下一页></a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+{% endblock detail2 %}
