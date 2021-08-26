@@ -2,7 +2,7 @@
 {% block body %}
     <div class="all_con y">
 		<div class="search_bar clearfix">
-			<a href="/user/index/"class="logo fl">云中书城</a>
+			<a href="/user/"class="logo fl">云中书城</a>
 {% if page_name == 1 %}
 			<a href="/user/index_list/" class="back fl active">首 页</a>
 			<a href="/user/info/" class="user_link fl">用户中心</a>
@@ -18,14 +18,19 @@
 				<input type="button" class="input_btn fr" name="" value="搜 索">
 			</div>
 			<div class="guest_info fr">
+				{% if request.session.user_name|default:'' != '' %}
 				<div class="login_info fl">
-					<em>阿 麟</em>
+					<em>{{ request.session.user_name }}</em>
+					<span>|</span>
+					<a href="/user/logout/">退出</a>
 				</div>
+				{% else %}
 				<div class="login_btn fl">
 					<a href="/user/login/">登录</a>
 					<span>|</span>
 					<a href="/user/register/">注册</a>
 				</div>
+				{% endif %}
 				<div class="goods_cart fr">
 					<a href="cart.html" title="购物车"><img src="/static/images/shop_cart.png"></a>
 				</div>

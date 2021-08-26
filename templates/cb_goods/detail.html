@@ -10,23 +10,23 @@
 	// 点击“-”号时执行
 	function minus() {
 		num = parseFloat($('.num_show').val());
-		if(num>1){
-			$('.num_show').val(num-1);
-			$('.num_show').blur();
+		if(num<=1){
+			return;
 		}
+		$('.num_show').val(num-1);
+		$('.num_show').blur();
 	}
 	// 失去焦点时，进行计算
 	$(function(){
 		$('.num_show').blur(function(){
-			num = parseFloat($('.num_show').val());
+			num = parseInt($('.num_show').val());
 			price = parseFloat($('#gprice').text());
-			if(num<=0){
-				alert('商品不能少于1件！');
+			if(num<=1){
+				num=1;
 			}
-			else{
-				total = num*price;
-				$('#gtotal').text(total.toFixed(2)+'元');
-			}
+			total = num*price;
+			$('.num_show').val(num);
+			$('#gtotal').text(total.toFixed(2)+'元');
 		});
 	});
 	// $(function(){
@@ -101,8 +101,8 @@
 						<ul>
 							{% for sell in sells %}
 							<li>
-								<a href="/{{ sell.id }}"><img src="/static/{{ sell.gpic }}"></a>
-								<h4><a href="/{{ sell.id }}">{{ sell.gtitle }}</a></h4>
+								<a href="/{{ sell.id }}/"><img src="/static/{{ sell.gpic }}"></a>
+								<h4><a href="/{{ sell.id }}/">{{ sell.gtitle }}</a></h4>
 								<div class="price">￥{{ sell.gsellprice }}</div>
 							</li>
 							{% endfor %}
@@ -115,8 +115,8 @@
 						<ul>
 							{% for class in classes %}
 							<li>
-								<a href="/{{ class.id }}"><img src="/static/{{ class.gpic }}"></a>
-								<h4><a href="/{{ class.id }}">{{ class.gtitle }}</a></h4>
+								<a href="/{{ class.id }}/"><img src="/static/{{ class.gpic }}"></a>
+								<h4><a href="/{{ class.id }}/">{{ class.gtitle }}</a></h4>
 								<div class="price">￥{{ class.gsellprice }}</div>
 							</li>
 							{% endfor %}
@@ -129,8 +129,8 @@
 						<ul>
 							{% for dis in disc %}
 							<li>
-								<a href="/{{ dis.id }}"><img src="/static/{{ dis.gpic }}"></a>
-								<h4><a href="/{{ dis.id }}">{{ dis.gtitle }}</a></h4>
+								<a href="/{{ dis.id }}/"><img src="/static/{{ dis.gpic }}"></a>
+								<h4><a href="/{{ dis.id }}/">{{ dis.gtitle }}</a></h4>
 								<div class="price">￥{{ dis.gsellprice }}</div>
 							</li>
 							{% endfor %}

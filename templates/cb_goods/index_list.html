@@ -45,9 +45,9 @@
 						{% for t1 in type0 %}
 						<li>
 							<a href="/{{ t1.id }}/"><img src="/static/{{ t1.gpic }}"></a>
-							<h4><a href="/{{ t1.id }}/">￥{{ t1.gtitle }}</a></h4>
+							<h4><a href="/{{ t1.id }}/">{{ t1.gtitle }}</a></h4>
 							<div class="price">￥{{ t1.gsellprice }}
-								<span class="fixed_price"><del>{{ t1.gprice }}</del></span>
+								<span class="fixed_price"><del>￥{{ t1.gprice }}</del></span>
 							</div>
 						</li>
 						{% endfor %}
@@ -60,7 +60,7 @@
 					{% for t2 in type01 %}
 					<li>
 						<a href="/{{ t2.id }}/"><img src="/static/{{ t2.gpic }}"></a>
-						<h4><a href="/{{ t2.id }}/">￥{{ t2.gtitle }}</a></h4>
+						<h4><a href="/{{ t2.id }}/">{{ t2.gtitle }}</a></h4>
 						<p class="author">
 							<span>{{ t2.gauthor }}</span>
 						</p>

@@ -380,16 +380,16 @@ body{
     margin:33px 0;
 }
 .login_info{
-    display:none;
+    /*display:none;*/
     margin-right:5px;
 }
 .login_info em{
     color:#fff;
 }
-.login_btn a{
+.login_btn a,.login_info a{
 	color:#e83926;
 }
-.login_btn span{
+.login_btn span,.login_info span{
 	color:#cecece;
 	margin:0 10px;
 }
@@ -516,7 +516,7 @@ body{
     color:#da260e;
 }
 .operate_btn{
-    float: left; 
+    float: left;
     height:40px;
     margin-top:2px;
     margin-bottom:20px;
@@ -868,7 +868,7 @@ a.active{
     color:#666;
 }
 .main_con{
-	width:1000px;
+	width:1200px;
 	margin:30px auto;
     text-align:center;
 }
@@ -877,7 +877,7 @@ a.active{
     height:58px;
     font:bold 20px/58px 'Microsoft Yahei';
     color:#666;
-	margin:0 auto auto 0;
+	margin:0 auto auto 20px;
     cursor:pointer;
     background-color:#ddd;
 }
@@ -886,9 +886,9 @@ a.active{
     color:#fff;
 }
 .right_content{
-    width:880px;
+    width:980px;
     height:58px;
-    margin:0 auto auto 200px;
+    margin:0 auto auto 240px;
 }
 .info_con{
     background-color:rgba(255,255,255,0.5);
@@ -900,7 +900,7 @@ a.active{
     margin-left:20px;
 }
 .user_info_list{
-    width:880px;
+    width:980px;
     height:290px;
     text-align:left;
     background-color:rgba(255,255,255,0.5);
@@ -926,7 +926,7 @@ a.active{
     font:16px/30px 'Microsoft Yahei';
 }
 .site_con2{
-    width:880px;
+    width:980px;
     display:inline-block;
     background-color:rgba(255,255,255,0.5);
 }
@@ -977,8 +977,9 @@ a.active{
 	cursor:pointer;
 	font-family:'Microsoft Yahei'
 }
-.order_list_th{
-    width:878px;
+.order_list_th,.history_list_th{
+    float:left;
+    width:978px;
     height:30px;
     border:1px solid #ddd;
     color:#444;
@@ -1000,7 +1001,7 @@ a.active{
 	color:#f6673b;
 }
 .order_list_table{
-	width:880px;
+	width:980px;
 	border-collapse:collapse;
 	border-spacing:0px;
 	border:1px solid #a3a5a7;
@@ -1054,8 +1055,54 @@ a.active{
     padding:5px 10px;
     background-color:#4f90c8;
 }
+.history_list_th li{
+    float:left;
+    height:30px;
+    line-height:30px;
+    margin-left:50px;
+}
+.history_goods_list{
+	float:left;
+    width:980px;
+	margin:8px auto;
+}
+.history_goods_list li{
+	width:196px;
+	float:left;
+	margin-bottom:10px;
+}
+.history_goods_list li img{
+    width:150px;
+    height:150px;
+    display:block;
+    margin:10px auto;
+    border:1px solid #ddd;
+}
+.history_goods_list li h4{
+    width:150px;
+    margin:0 auto;
+    text-align:left;
+}
+.history_goods_list li h4 a{
+    font-weight:normal;
+    color:#000;
+    display:block;
+    width:150px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.history_goods_list li h4 a:hover{
+    text-decoration:underline;
+}
+.history_goods_list .author{
+    margin:0 auto;
+    text-align:left;
+}
 /*分页样式*/
 .pagenation{
+    float:left;
+    width:980px;
     height:32px;
     text-align:center;
     font-size:0;

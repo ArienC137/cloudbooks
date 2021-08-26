@@ -3,7 +3,9 @@ from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from .models import *
 from cb_goods.models import *
 from hashlib import sha1
+from . import user_decorator
 import random
+import time
 
 # Create your views here.
 def index(request):
@@ -109,6 +111,8 @@ def index_list(request):
                } # 把page_name变量的值1传给模板是为了判断顶部栏与用户中心页面的区别，从而显示与用户中心页面不同的部分
     return render(request,'cb_goods/index_list.html',context) # 显示商品首页
 
+# 使用装饰器（开始装饰）：使用user_decorator.py中的login装饰器装饰info(request)函数
+@user_decorator.login
 def info(request):
     user_email = UserInfo.objects.get(id=request.session['user_id']).uemail
     # 数据库中的uaddress和uphone字段的默认值是''，所以不会报错
@@ -117,10 +121,12 @@ def info(request):
     context = {'title':'用户中心','user_email':user_email,'user_name':request.session['user_name'],'user_address':user_address,'user_phone':user_phone,'page_name':2}
     return render(request,'cb_user/user_center_info.html',context) # 显示用户中心页面
 
+@user_decorator.login
 def order(request):
-    context = {'title':'用户中心','page_name':2}
+    context = {'title':'所有订单','page_name':2}
     return render(request,'cb_user/user_center_order.html',context) # 显示用户订单页面
 
+@user_decorator.login
 def site(request):
     # 点击（超）链接的请求方式是GET
     # 用户已经登录，所以查找用户名时可以根据id查找
@@ -135,6 +141,40 @@ def site(request):
         user.uphone = post.get('uphone')
         # 保存到数据库中
         user.save()
-    context = {'title':'用户中心','user':user,'page_name':2}
+    context = {'title':'编辑地址','user':user,'page_name':2}
     return render(request,'cb_user/user_center_site.html',context) # 显示用户地址页面
 
+@user_decorator.login
+def history(request):
+    # 获取当前日期
+    # 获取月
+    time1 = time.strftime("%m")
+    # 去掉第一个位置的“0”
+    if time1.startswith('0'):
+        time1 = time1[1:]
+        
+    # 获取日
+    time2 = time.strftime("%d")
+    datetime = time1 + '月' + time2 + '日'
+    # 浏览记录：读取cookie
+    goods_ids = request.COOKIES.get('goods_ids','')
+    # 用“,”分隔为列表（拼接的时候就是用“,”拼接）
+    goods_ids1 = goods_ids.split(',')
+    # 不能查询商品的id然后排序：会按商品的id排序
+    # GoodsInfo.objects.filter(id__in=goods_ids1)
+    # 应借助一个空列表，循环取出所有信息并按此顺序添加
+    goods_list = []
+    for goods_id in goods_ids1:
+        goods_list.append(GoodsInfo.objects.get(id=int(goods_id)))
+
+    context = {'title':'浏览记录','page_name':2,'goods_list':goods_list,'datetime':datetime}
+    return render(request,'cb_user/user_center_history.html',context) # 显示用户浏览记录页面
+
+# 退出登录：实际操作是清除session
+def logout(request):
+    # 清除用户的全部信息（如果还存了其他信息如浏览记录，则使用del只清除user_id和user_name与登录相关的信息
+    # request.session.flush()
+    del request.session['user_id']
+    del request.session['user_name']
+    # 返回首页（logo页）
+    return redirect('/user/')
