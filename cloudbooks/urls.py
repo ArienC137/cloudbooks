@@ -21,4 +21,7 @@ urlpatterns = [
     re_path(r'^user/',include('cb_user.urls')),
     re_path(r'^tinymce/',include('tinymce.urls')),
     re_path(r'',include('cb_goods.urls')),
+    re_path(r'^cart/',include('cb_cart.urls')),
+    re_path(r'^order/',include('cb_order.urls')),
+    # re_path(r'^search/',include('haystack.urls')),
 ]

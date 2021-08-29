@@ -1,0 +1,63 @@
+{% extends 'base_foot.html' %}
+{% block content2 %}
+        <div class="navbar_con">
+			<div class="navbar clearfix">
+				<div class="subnav_con fl">
+					<h1>全部商品分类</h1>
+					<span></span>
+					<ul class="subnav">
+						<li><a href="/list1_1_1/" class="child">童书</a></li>
+						<li><a href="/list2_1_1/" class="novel">小说</a></li>
+						<li><a href="/list3_1_1/" class="social">人文社科</a></li>
+						<li><a href="/list4_1_1/" class="encourage">励志</a></li>
+						<li><a href="/list5_1_1/" class="science">科技</a></li>
+						<li><a href="/list6_1_1/" class="original">英文原版</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="main_wrap clearfix">
+			<ul class="goods_search_list clearfix">
+				{% for item in page %}
+				<li>
+					<a href="/{{ item.object.id }}/"><img src="/static/{{ item.object.gpic }}"></a>
+					<h1><a href="/{{ item.object.id }}/">{{ item.object.gtitle }}</a></h1>
+					<div class="price_bar2">
+						<span class="show_pirce2">￥<em>{{ item.object.gsellprice }}</em></span>
+						<span class="discount_price2">({{ item.object.gdiscount }}折)</span>
+						<div class="set_price2">定价：<del>¥{{ item.object.gprice }}</del></div>
+					</div>
+					<div class="author_bar2">
+						<h3><a href="#">{{ item.object.gauthor }}</a></h3>
+						<h3>/{{ item.object.gpubtime }}</h3>
+						<h3><a href="#">/{{ item.object.gpublish }}</a></h3>
+					</div>
+					<div class="tab_content2">
+						<span>{{ item.object.gbrief|slice:'125' }}</span>
+					</div>
+					<div class="operate_btn2">
+						<a href="/cart/add{{ item.object.id }}_1/" class="add_cart2" id="add_cart">加入购物车</a>
+						<a href="javascript:;" class="add_star2" id="add_star">加入收藏</a>
+					</div>
+				</li>
+				{% endfor %}
+			</ul>
+			<div class="page_box">
+				<div class="pagenation">
+					{% if page.has_previous %}
+					<a href="/search/?q={{ query }}&amp;page={{ page.previous_page_number }}/"><上一页</a>
+					{% endif %}
+					{% for pindex in paginator.page_range %}
+					{% if pindex == page.number %}
+					<a href="#" class="active">{{ pindex }}</a>
+					{% else %}
+					<a href="/search/?q={{ query }}&amp;page={{ pindex }}/">{{ pindex }}</a>
+					{% endif %}
+					{% endfor %}
+					{% if page.has_next %}
+					<a href="/search/?q={{ query }}&amp;page={{ page.next_page_number }}/">下一页></a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+{% endblock content2 %}

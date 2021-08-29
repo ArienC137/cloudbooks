@@ -15,17 +15,17 @@
 					</ul>
 				</div>
 				<ul class="navlist fl">
-					<li><a href="/classify{{ type.id }}_1_1/"
+					<li><a href="/classify1_1/"
 					{% if classify == '1' %} class="active"
 					{% endif %}
 					>畅销书榜</a></li>
 					<li class="interval">|</li>
-					<li><a href="/classify{{ type.id }}_1_2/"
+					<li><a href="/classify1_2/"
 					{% if classify == '2' %} class="active"
 					{% endif %}
 					>经典书榜</a></li>
 					<li class="interval">|</li>
-					<li><a href="/classify{{ type.id }}_1_3/"
+					<li><a href="/classify1_3/"
 					{% if classify == '3' %} class="active"
 					{% endif %}
 					>特价书榜</a></li>
@@ -35,19 +35,19 @@
 		<div class="breadcrumb">
 			<a href="#">全部分类</a>
 			<span>></span>
-			<a href="/list{{ type.id }}_1_1/">全部分类</a>
+			<a href="/user/index_list1_1/">全部分类</a>
 		</div>
 		<div class="main_wrap clearfix">
 			<div class="l_wrap fl clearfix">
 				<div class="new_goods">
 					<a href="#"><h3>新品推荐</h3></a>
 					<ul>
-						{% for t1 in type0 %}
+						{% for new in news %}
 						<li>
-							<a href="/{{ t1.id }}/"><img src="/static/{{ t1.gpic }}"></a>
-							<h4><a href="/{{ t1.id }}/">{{ t1.gtitle }}</a></h4>
-							<div class="price">￥{{ t1.gsellprice }}
-								<span class="fixed_price"><del>￥{{ t1.gprice }}</del></span>
+							<a href="/{{ new.id }}/"><img src="/static/{{ new.gpic }}"></a>
+							<h4><a href="/{{ new.id }}/">{{ new.gtitle }}</a></h4>
+							<div class="price">￥{{ new.gsellprice }}
+								<span class="fixed_price"><del>￥{{ new.gprice }}</del></span>
 							</div>
 						</li>
 						{% endfor %}
@@ -55,21 +55,53 @@
 				</div>
 			</div>
 			<div class="r_wrap fr clearfix">
-{% block detail %}{% endblock detail %}
+				<div class="sort_bar">
+					<a href="/list1_1/"
+					{% if sort == "1" %}
+					 class="active"
+					{% endif %}
+					>默认</a>
+					<a href="/list1_2/"
+					{% if sort == "2" %}
+					 class="active"
+					{% endif %}
+					>价格</a>
+					<a href="/list1_3/"
+					{% if sort == "3" %}
+					 class="active"
+					{% endif %}
+					>人气</a>
+				</div>
 				<ul class="goods_type_list clearfix">
-					{% for t2 in type01 %}
+					{% for g in page %}
 					<li>
-						<a href="/{{ t2.id }}/"><img src="/static/{{ t2.gpic }}"></a>
-						<h4><a href="/{{ t2.id }}/">{{ t2.gtitle }}</a></h4>
+						<a href="/{{ g.id }}/"><img src="/static/{{ g.gpic }}"></a>
+						<h4><a href="/{{ g.id }}/">{{ g.gtitle }}</a></h4>
 						<p class="author">
-							<span>{{ t2.gauthor }}</span>
+							<span>{{ g.gauthor }}</span>
 						</p>
 						<p class="price">
-							<span class="price_l">￥{{ t2.gsellprice }}</span>
-							<span class="price_r"><del>￥{{ t2.gprice }}</del></span>
+							<span class="price_l">￥{{ g.gsellprice }}</span>
+							<span class="price_r"><del>￥{{ g.gprice }}</del></span>
 						</p>
 					</li>
 					{% endfor %}
                 </ul>
-{% block detail2 %}{% endblock detail2 %}
+				<div class="pagenation">
+					{% if page.has_previous %}
+					<a href="/user/index_list{{ page.previous_page_number }}_{{ sort }}/"><上一页</a>
+					{% endif %}
+					{% for pindex in paginator.page_range %}
+					{% if pindex == page.number %}
+					<a href="#" class="active">{{ pindex }}</a>
+					{% else %}
+					<a href="/user/index_list{{ pindex }}_{{ sort }}/">{{ pindex }}</a>
+					{% endif %}
+					{% endfor %}
+					{% if page.has_next %}
+					<a href="/user/index_list{{ page.next_page_number }}_{{ sort }}/">下一页></a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
 {% endblock content2 %}

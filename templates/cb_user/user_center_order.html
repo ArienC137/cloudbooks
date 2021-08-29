@@ -7,7 +7,7 @@
 					<a href="/user/order/"><li class="active">全部订单</li></a>
 					<a href="/user/site/"><li>收货地址</li></a>
 					<a href="user_center_site.html"><li>我的收藏</li></a>
-					<a href="/user/history/"><li>浏览记录</li></a>
+					<a href="/user/history1/"><li>浏览记录</li></a>
 					<a href="user_center_site.html"><li>联系我们</li></a>
 				</ul>
 			</div>
@@ -71,13 +71,19 @@
 						</tbody>
 					</table>
 					<div class="pagenation">
-						<a href="#"><上一页</a>
-						<a href="#" class="active">1</a>
-						<a href="#">2</a>
-						<a href="#">3</a>
-						<a href="#">4</a>
-						<a href="#">5</a>
-						<a href="#">下一页></a>
+						{% if page.has_previous %}
+						<a href="/user/history{{ page.previous_page_number }}/"><上一页</a>
+						{% endif %}
+						{% for pindex in paginator.page_range %}
+						{% if pindex == page.number %}
+						<a href="#" class="active">{{ pindex }}</a>
+						{% else %}
+						<a href="/user/history{{ pindex }}/">{{ pindex }}</a>
+						{% endif %}
+						{% endfor %}
+						{% if page.has_next %}
+						<a href="/user/history{{ page.next_page_number }}/">下一页></a>
+						{% endif %}
 					</div>
 				</div>
 			</div>

@@ -2,12 +2,21 @@ from django.shortcuts import render,redirect # redirect重定向
 from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from .models import *
 from cb_goods.models import *
+from cb_cart.models import *
 from hashlib import sha1
 from . import user_decorator
-import random
+from django.core.paginator import *
 import time
 
 # Create your views here.
+# 购物车数量
+def cart_count(request):
+    if request.session.has_key('user_id'):
+        # 查询当前登录用户的所有购物车信息
+        return CartInfo.objects.filter(user_id=request.session['user_id'])
+    else:
+        return 0
+
 def index(request):
     return render(request,'cb_user/index.html') # 显示首页（logo页）
 
@@ -74,20 +83,23 @@ def login_handle(request):
         s1.update(upwd.encode("utf8"))
         # users[0]：使用filter得到的列表中的第一个元素即用户名（对象）。users[0].upwd：获取用户名对象的upwd属性的值
         if s1.hexdigest() == users[0].upwd:
+            # 从COOKIES中取url记录，没有则为主页面
+            url = request.COOKIES.get('url','/user/index/')
             # 不使用redirect而使用HttpResponseRedirect的原因：redirect不能设置cookie信息
-            red = HttpResponseRedirect('/user/index_list/')
+            red = HttpResponseRedirect(url)
             # 记住用户名（实际操作是存到cookie里）：设置cookie
             if jizhu != 0:
                 red.set_cookie('uname',uname)
             else:
                 # 设置cookie的值为空
                 red.set_cookie('uname','',max_age=-1)
+
             # 设置session
             # 存储用户名的id，以后查找用户名时可以根据id查找
             request.session['user_id'] = users[0].id
             # 存储用户名，因为很多页面需要显示用户名（使用频率高），每次都根据id查找效率低
             request.session['user_name'] = uname
-            # 返回用户中心页面
+            # 返回用户登录之前的页面或主页面
             return red
         else:
             context = {'title':'用户登录','error_name':0,'error_pwd':1,'uname':uname,'upwd':upwd}
@@ -99,15 +111,31 @@ def login_handle(request):
         context = {'title':'用户登录','error_name':1,'error_pwd':0,'uname':uname,'upwd':upwd}
         return render(request,'cb_user/login.html',context) # 显示登录页面
 
-def index_list(request):
-    # 默认随机查询一个商品分类的最新的2条（按id）、最热的10条数据（按gclick）
-    typelist = TypeInfo.objects.all()
-    t = random.randint(0,len(typelist)-1)
-    type0 = typelist[t].goodsinfo_set.order_by('-id')[0:2]
-    type01 = typelist[t].goodsinfo_set.order_by('-gclick')[0:10]
+def index_list(request,pindex,sort):
+    # 新品推荐：查询所有商品中最新的2条数据（按id）
+    news = GoodsInfo.objects.order_by('-id')[0:2]
+    # 默认（最新）
+    if sort == '1':
+        goods_list = GoodsInfo.objects.order_by('-id')
+    # 价格
+    if sort == '2':
+        goods_list = GoodsInfo.objects.order_by('-gsellprice')
+    # 人气（点击量）
+    if sort == '3':
+        goods_list = GoodsInfo.objects.order_by('-gclick')
+    # 分页：Paginator(列表,int)
+    paginator = Paginator(goods_list,10) # 一页放10条数据
+    # 显示当前页的数据
+    page = paginator.page(int(pindex))
+    if request.session.has_key('user_id'):
+        # 查询当前登录用户的所有购物车信息
+        carts = CartInfo.objects.filter(user_id=request.session['user_id'])
+    else:
+        return 0
     context = {'title':'首页','page_name':1,
-               'type0':type0,'type01':type01,
-               'type':typelist[t]
+               'news':news,'sort':sort,
+               'page':page,'paginator':paginator,
+               'carts':carts
                } # 把page_name变量的值1传给模板是为了判断顶部栏与用户中心页面的区别，从而显示与用户中心页面不同的部分
     return render(request,'cb_goods/index_list.html',context) # 显示商品首页
 
@@ -118,12 +146,14 @@ def info(request):
     # 数据库中的uaddress和uphone字段的默认值是''，所以不会报错
     user_address = UserInfo.objects.get(id=request.session['user_id']).uaddress
     user_phone = UserInfo.objects.get(id=request.session['user_id']).uphone
-    context = {'title':'用户中心','user_email':user_email,'user_name':request.session['user_name'],'user_address':user_address,'user_phone':user_phone,'page_name':2}
+    carts = cart_count(request)
+    context = {'title':'用户中心','user_email':user_email,'user_name':request.session['user_name'],'user_address':user_address,'user_phone':user_phone,'page_name':2,'carts':carts}
     return render(request,'cb_user/user_center_info.html',context) # 显示用户中心页面
 
 @user_decorator.login
 def order(request):
-    context = {'title':'所有订单','page_name':2}
+    carts = cart_count(request)
+    context = {'title':'所有订单','page_name':2,'carts':carts}
     return render(request,'cb_user/user_center_order.html',context) # 显示用户订单页面
 
 @user_decorator.login
@@ -141,18 +171,19 @@ def site(request):
         user.uphone = post.get('uphone')
         # 保存到数据库中
         user.save()
-    context = {'title':'编辑地址','user':user,'page_name':2}
+    carts = cart_count(request)
+    context = {'title':'编辑地址','user':user,'page_name':2,'carts':carts}
     return render(request,'cb_user/user_center_site.html',context) # 显示用户地址页面
 
 @user_decorator.login
-def history(request):
+def history(request,pindex):
     # 获取当前日期
     # 获取月
     time1 = time.strftime("%m")
     # 去掉第一个位置的“0”
     if time1.startswith('0'):
         time1 = time1[1:]
-        
+
     # 获取日
     time2 = time.strftime("%d")
     datetime = time1 + '月' + time2 + '日'
@@ -167,7 +198,12 @@ def history(request):
     for goods_id in goods_ids1:
         goods_list.append(GoodsInfo.objects.get(id=int(goods_id)))
 
-    context = {'title':'浏览记录','page_name':2,'goods_list':goods_list,'datetime':datetime}
+    # 分页：Paginator(列表,int)
+    paginator = Paginator(goods_list,10) # 一页放10条数据
+    # 显示当前页的数据
+    page = paginator.page(int(pindex))
+    carts = cart_count(request)
+    context = {'title':'浏览记录','page_name':2,'datetime':datetime,'page':page,'paginator':paginator,'carts':carts}
     return render(request,'cb_user/user_center_history.html',context) # 显示用户浏览记录页面
 
 # 退出登录：实际操作是清除session

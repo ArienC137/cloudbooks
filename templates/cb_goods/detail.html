@@ -1,4 +1,4 @@
-{% extends 'cb_goods/base.html' %}
+{% extends 'base_top.html' %}
 {% block head %}
 <script type="text/javascript">
 	// 点击“+”号时执行
@@ -28,27 +28,36 @@
 			$('.num_show').val(num);
 			$('#gtotal').text(total.toFixed(2)+'元');
 		});
+		// 添加到购物车动画
+		var $add_x = $('#add_cart').offset().top;
+		var $add_y = $('#add_cart').offset().left;
+		var $to_x = $('#show_count').offset().top;
+		var $to_y = $('#show_count').offset().left;
+		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
+		$('#add_cart').click(function(){
+			// 判断是否登录：因为视图中的add函数中需要获取session，所以需要先登录才能得到值
+			if($('.login_btn').text().indexOf('登录')>=0){
+				alert('请先登录后再购买');
+				location.href = '/user/login/'
+				return;
+			}
+			// 动画
+			$(".add_jump").stop().animate({
+				'left': $to_y+7,
+				'top': $to_x+7},
+				"fast",function(){
+					$(".add_jump").fadeOut('fast',function(){});
+			});
+			// 异步（发送异步请求）
+			num = parseInt($('.num_show').val());
+			$.get('/cart/add{{ g.id }}_'+num+'/',function(data){
+				$('#show_count').text(data.count);
+			});
+		});
 	});
-	// $(function(){
-	// 	var $add_x = $('#add_cart').offset().top;
-	// 	var $add_y = $('#add_cart').offset().left;
-	// 	var $to_x = $('#show_count').offset().top;
-	// 	var $to_y = $('#show_count').offset().left;
-	// 	$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'});
-	// 	$('#add_cart').click(function(){
-	// 		$(".add_jump").stop().animate({
-	// 			'left':$to_y+7,
-	// 			'top':$to_x+7},
-	// 			"fast",function(){
-	// 			$(".add_jump").fadeOut('fast',function(){
-	// 				$('#show_count').html(2);
-	// 			});
-	// 		});
-	// 	});
-	// });
 </script>
 {% endblock head %}
-{% block content2 %}
+{% block content %}
 		<div class="goods_detail_con clearfix">
 			<div class="goods_detail_pic fl"><img src="/static/{{ g.gpic }}"></div>
 			<div class="goods_detail_list fr">
@@ -82,6 +91,7 @@
 				</div>
 			</div>
 		</div>
+		<div class="add_jump"></div>
 		<div class="show_content clearfix">
 			<ul class="detail_tab clearfix">
 				<a href="#"><li class="active">商品详情</li></a>
@@ -89,8 +99,14 @@
 			</ul>
 			<div class="tab_content">
 				<dl>
+					<dt>商品详情：</dt>
+					<dd>{{ g.gdetail|striptags }}</dd>
 					<dt>内容简介：</dt>
 					<dd>{{ g.gcontent|striptags }}</dd>
+					<dt>作者简介：</dt>
+					<dd>{{ g.gauthorIntroduct|striptags }}</dd>
+					<dt>目录：</dt>
+					<dd>{{ g.gcatalogue|striptags }}</dd>
 				</dl>
 			</div>
 		</div>
@@ -138,4 +154,4 @@
 				</div>
 			</div>
 		</div>
-{% endblock content2 %}
+{% endblock content %}

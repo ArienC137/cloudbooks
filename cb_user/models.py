@@ -12,3 +12,5 @@ class UserInfo(models.Model):
     # 邮编
     uyoubian = models.CharField(max_length=6,default='')
     uphone = models.CharField(max_length=11,default='')
+    # 收货人
+    ushou = models.CharField(max_length=20)

@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cb_user',
     'cb_goods',
+    'cb_cart',
+    'cb_order',
+    'tinymce',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -138,7 +142,23 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'static')
 # MEDIA_ROOT = '/var/www/cloudbooks/static'
 
 TINYMCE_DEFAULT_CONFIG = {
-    'theme': 'silver',
-    'width': 600,
-    'height': 400,
+    'theme':'silver',
+    'width':600,
+    'height':400,
 } # 只决定了admin管理站点中的效果
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 使用whoosh引擎
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        # 索引文件路径
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+
+# 自动生成索引：有数据改变时自动更新查询的库whoosh_index
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# 把多个之间原来的逻辑与的关系变成逻辑或
+HAYSTACK_DEFAULT_OPERATOR = 'OR'
+# 配置显示搜索结果时一页显示多少条数据
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 18

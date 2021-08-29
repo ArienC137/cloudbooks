@@ -1,0 +1,5 @@
+{{ object.gtitle }}
+{{ object.gauthor }}
+{{ object.gpublish }}
+{{ object.gbrief }}
+{{ object.gcontent }}

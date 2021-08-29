@@ -7,7 +7,7 @@
 					<a href="/user/order/"><li>全部订单</li></a>
 					<a href="/user/site/"><li>收货地址</li></a>
 					<a href="user_center_site.html"><li>我的收藏</li></a>
-					<a href="/user/history/"><li class="active">浏览记录</li></a>
+					<a href="/user/history1/"><li class="active">浏览记录</li></a>
 					<a href="user_center_site.html"><li>联系我们</li></a>
 				</ul>
 			</div>
@@ -18,44 +18,34 @@
 						<li>{{ datetime }}</li>
 					</ul>
 					<ul class="history_goods_list">
-						{% for goods in goods_list %}
+						{% for g in page %}
 						<li>
-							<a href="/{{ goods.id }}/"><img src="/static/{{ goods.gpic }}"></a>
-							<h4><a href="/{{ goods.id }}/" title="{{ goods.gtitle }}">{{ goods.gtitle }}</a></h4>
+							<a href="/{{ g.id }}/"><img src="/static/{{ g.gpic }}"></a>
+							<h4><a href="/{{ g.id }}/" title="{{ g.gtitle }}">{{ g.gtitle }}</a></h4>
 							<p class="author">
-								<span>{{ goods.gauthor }}</span>
+								<span>{{ g.gauthor }}</span>
 							</p>
 							<p class="price">
-								<span class="price_l"><em>￥{{ goods.gsellprice }}</em></span>
-								<span class="price_r"><del>￥{{ goods.gprice}}</del></span>
+								<span class="price_l"><em>￥{{ g.gsellprice }}</em></span>
+								<span class="price_r"><del>￥{{ g.gprice}}</del></span>
 							</p>
 						</li>
 						{% endfor %}
 					</ul>
-					<ul class="history_list_th clearfix">
-						<li>2021-8-18</li>
-					</ul>
-					<ul class="history_goods_list">
-						<li>
-							<a href="detail.html"><img src="images/goods_detail1.png"></a>
-							<h4><a href="detail.html" title="天龙八部">天龙八部</a></h4>
-							<p class="author">
-								<span>余华</span>
-							</p>
-							<p class="price">
-								<span class="price_l"><em>￥140.40</em></span>
-								<span class="price_r"><del>￥28.00</del></span>
-							</p>
-						</li>
-					</ul>
 					<div class="pagenation">
-						<a href="#"><上一页</a>
-						<a href="#" class="active">1</a>
-						<a href="#">2</a>
-						<a href="#">3</a>
-						<a href="#">4</a>
-						<a href="#">5</a>
-						<a href="#">下一页></a>
+						{% if page.has_previous %}
+						<a href="/user/history{{ page.previous_page_number }}/"><上一页</a>
+						{% endif %}
+						{% for pindex in paginator.page_range %}
+						{% if pindex == page.number %}
+						<a href="#" class="active">{{ pindex }}</a>
+						{% else %}
+						<a href="/user/history{{ pindex }}/">{{ pindex }}</a>
+						{% endif %}
+						{% endfor %}
+						{% if page.has_next %}
+						<a href="/user/history{{ page.next_page_number }}/">下一页></a>
+						{% endif %}
 					</div>
 				</div>
 			</div>

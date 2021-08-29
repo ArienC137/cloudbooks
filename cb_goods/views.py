@@ -1,10 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
+from cb_goods.models import *
+from cb_cart.models import *
 from django.core.paginator import *
 import time
 
 # Create your views here.
+# 购物车数量
+def cart_count(request):
+    if request.session.has_key('user_id'):
+        # 查询当前登录用户的所有购物车信息
+        return CartInfo.objects.filter(user_id=request.session['user_id'])
+    else:
+        return 0
+
 def list(request,tid,pindex,sort): # tid是类型，pindex是当前页数，sort是排序依据
     # 根据分类的id查询类型信息
     typeinfo = TypeInfo.objects.get(pk=int(tid))
@@ -15,37 +25,30 @@ def list(request,tid,pindex,sort): # tid是类型，pindex是当前页数，sort
     # 默认（最新）
     if sort == '1':
         goods_list = GoodsInfo.objects.filter(gtype_id=int(tid)).order_by('-id')
+        title = str(typeinfo.ttitle) + '默认'
     # 价格
     if sort == '2':
-        goods_list = GoodsInfo.objects.filter(gtype_id=int(tid)).order_by('-gprice')
+        goods_list = GoodsInfo.objects.filter(gtype_id=int(tid)).order_by('-gsellprice')
+        title = str(typeinfo.ttitle) + '价格'
     # 人气（点击量）
     if sort == '3':
         goods_list = GoodsInfo.objects.filter(gtype_id=int(tid)).order_by('-gclick')
+        title = str(typeinfo.ttitle) + '人气'
     # 分页：Paginator(列表,int)
     paginator = Paginator(goods_list,10) # 一页放10条数据
     # 显示当前页的数据
     page = paginator.page(int(pindex))
-    context = {'title':typeinfo.ttitle,
-               'page':page,
-               'paginator':paginator,
-               'typeinfo':typeinfo,
-               'sort':sort,
-               'news':news,
-               'disc':disc
+    carts = cart_count(request)
+    context = {'title':title,
+               'page':page,'paginator':paginator,
+               'typeinfo':typeinfo,'sort':sort,
+               'news':news,'disc':disc,'carts':carts
                }
     return render(request,'cb_goods/list.html',context) # 显示列表页
 
 def detail(request,id):
     # 获取当前日期
-    # 获取月
-    time1 = time.strftime("%m")
-    # 去掉第一个位置的“0”
-    if time1.startswith('0'):
-        time1 = time1[1:]
-
-    # 获取日
-    time2 = time.strftime("%d")
-    datetime = time1 + '月' + time2 + '日'
+    datetime = time.strftime("%m/%d")
     # 根据id查询商品
     goods = GoodsInfo.objects.get(pk=int(id))
     # 点击量+1
@@ -54,9 +57,10 @@ def detail(request,id):
     goods.gdiscount = goods.gsellprice*10//goods.gprice
     goods.save()
     disc = goods.gtype.goodsinfo_set.order_by('gdiscount')[0:4]
-    context = {'title':goods.gtitle,'page_name':1,'g':goods,'id':id,'page_name':0,'disc':disc}
+    carts = cart_count(request)
+    context = {'title':goods.gtitle,'g':goods,'id':id,'disc':disc,'carts':carts}
     response = render(request,'cb_goods/detail.html',context) # 显示详情页
-    # 记录浏览记录，在用户中心使用：获取goods_ids键对应的值，第一次为空
+    # 记录浏览记录，在用户中心使用：使用datetime作为键记录日期，获取datetime键对应的值，第一次为空
     goods_ids = request.COOKIES.get('goods_ids','')
     # 取goods.id的字符串形式
     goods_id = '%d'%goods.id
@@ -72,8 +76,8 @@ def detail(request,id):
         # 添加当前点击的商品到浏览记录中第一个位置
         goods_ids1.insert(0,goods_id)
         # 如果超过30条浏览记录就删除最后一条（即最开始添加的）
-        if len(goods_ids1) >= 11:
-            del goods_ids1[10]
+        if len(goods_ids1) >= 31:
+            del goods_ids1[30]
 
         # 用“, ”拼接成字符串
         goods_ids = ','.join(goods_ids1)
@@ -107,12 +111,22 @@ def classify(request,tid,pindex,classify):
     paginator = Paginator(goods_list,10) # 一页放10条数据
     # 显示当前页的数据
     page = paginator.page(int(pindex))
+    carts = cart_count(request)
     context = {'title':title,
-               'page':page,
-               'paginator':paginator,
-               'typeinfo':typeinfo,
-               'news':news,
-               'classify':classify
+               'page':page,'paginator':paginator,
+               'typeinfo':typeinfo,'news':news,
+               'classify':classify,'carts':carts
                }
     return render(request,'cb_goods/classify_list.html',context) # 显示书榜分类页
+
+from haystack.views import SearchView
+class MySearchView(SearchView):
+    # 重写了extra_context方法
+    def extra_context(self):
+        # 调用父级SearchView中的extra_context方法
+        context = super(MySearchView,self).extra_context()
+        # 新增上下文信息
+        context['title'] = '搜索'
+        context['carts'] = cart_count(self.request)
+        return context
 

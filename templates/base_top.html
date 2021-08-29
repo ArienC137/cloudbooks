@@ -4,18 +4,20 @@
 		<div class="search_bar clearfix">
 			<a href="/user/"class="logo fl">云中书城</a>
 {% if page_name == 1 %}
-			<a href="/user/index_list/" class="back fl active">首 页</a>
+			<a href="/user/index_list1_1/" class="back fl active">首 页</a>
 			<a href="/user/info/" class="user_link fl">用户中心</a>
 {% elif page_name == 2 %}
-			<a href="/user/index_list/" class="back fl">首 页</a>
+			<a href="/user/index_list1_1/" class="back fl">首 页</a>
 			<a href="/user/info/" class="user_link fl active">用户中心</a>
 {% else %}
-			<a href="/user/index_list/" class="back fl">首 页</a>
+			<a href="/user/index_list1_1/" class="back fl">首 页</a>
 			<a href="/user/info/" class="user_link fl">用户中心</a>
 {% endif %}
 			<div class="search_con fl">
-				<input type="text" class="input_text fl" name="" placeholder="请输入书名">
-				<input type="button" class="input_btn fr" name="" value="搜 索">
+				<form method='get' action="/search/" target="_blank">
+					<input type="text" class="input_text fl" name="q" value="{{ query }}" placeholder="请输入书名">
+					<input type="submit" class="input_btn fr" name="" value="搜 索">
+				</form>
 			</div>
 			<div class="guest_info fr">
 				{% if request.session.user_name|default:'' != '' %}
@@ -32,7 +34,8 @@
 				</div>
 				{% endif %}
 				<div class="goods_cart fr">
-					<a href="cart.html" title="购物车"><img src="/static/images/shop_cart.png"></a>
+					<a href="/cart/" title="购物车"><img src="/static/images/shop_cart.png"></a>
+					<div class="goods_count fl total_count1" id="show_count">{{ carts.count }}</div>
 				</div>
 			</div>
         </div>

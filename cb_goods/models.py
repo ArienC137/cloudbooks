@@ -37,7 +37,13 @@ class GoodsInfo(models.Model):
     # 库存（如果需要则设计）
     gstock = models.IntegerField()
     # 商品详情：使用富文本编辑器，方便编辑人员维护信息
+    gdetail = HTMLField()
+    # 内容简介
     gcontent = HTMLField()
+    # 作者简介
+    gauthorIntroduct = HTMLField()
+    # 目录
+    gcatalogue = HTMLField()
     # 商品分类
     gtype = models.ForeignKey(TypeInfo,on_delete=models.CASCADE)
     # 推荐商品：使用布尔类型而不使用整型（使用整型需要该商品的源代码的数值），默认不推荐
