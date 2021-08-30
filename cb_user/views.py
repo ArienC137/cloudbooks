@@ -3,6 +3,7 @@ from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from .models import *
 from cb_goods.models import *
 from cb_cart.models import *
+from cb_order.models import *
 from hashlib import sha1
 from . import user_decorator
 from django.core.paginator import *
@@ -131,7 +132,7 @@ def index_list(request,pindex,sort):
         # 查询当前登录用户的所有购物车信息
         carts = CartInfo.objects.filter(user_id=request.session['user_id'])
     else:
-        return 0
+        carts = 0
     context = {'title':'首页','page_name':1,
                'news':news,'sort':sort,
                'page':page,'paginator':paginator,
@@ -151,9 +152,14 @@ def info(request):
     return render(request,'cb_user/user_center_info.html',context) # 显示用户中心页面
 
 @user_decorator.login
-def order(request):
+def order(request,pindex):
+    goods_list = OrderInfo.objects.order_by('user_id')
+    # 分页：Paginator(列表,int)
+    paginator = Paginator(goods_list,10) # 一页放10条数据
+    # 显示当前页的数据
+    page = paginator.page(int(pindex))
     carts = cart_count(request)
-    context = {'title':'所有订单','page_name':2,'carts':carts}
+    context = {'title':'所有订单','page_name':2,'carts':carts,'page':page,'paginator':paginator}
     return render(request,'cb_user/user_center_order.html',context) # 显示用户订单页面
 
 @user_decorator.login

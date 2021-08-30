@@ -1,0 +1,100 @@
+{% extends 'base_top.html' %}
+{% block head %}
+<script type="text/javascript">
+	// 删除
+	function star_del(star_id){
+		del = confirm('确定要删除吗？');
+		if(del){
+			// 异步
+			$.get('/star/delete'+star_id+'/',function(data){
+				// 如果删除成功
+				if(data.ok==1){
+					// 移除当前项：$('li')获取所有li元素
+					$('li').remove('#'+star_id);
+				}
+			});
+		}
+	}
+	$(function(){
+		$('.img_con').mouseenter(function(){
+			$(this).children('div').fadeToggle();
+		});
+		$('.img_con').mouseleave(function(){
+			$(this).children('div').hide();
+		});
+		$('.add_cart3').click(function(){
+			// 异步（发送异步请求）
+			num = 1;
+			gid = $(this).parents('.star_goods').attr('id');
+			$.get('/star/add_cart'+gid+'_'+num+'/',function(data){
+				alert('添加成功！');
+			});
+		});
+	});
+</script>
+<!--{% if messages %}-->
+<!--<script>-->
+<!--	{% for msg in messages %}-->
+<!--		alert('{{ msg.message }}');-->
+<!--	{% endfor %}-->
+<!--</script>-->
+<!--{% endif %}-->
+{% endblock head %}
+{% block content %}
+		<div class="main_con clearfix">
+			<div class="left_menu_con clearfix fl">
+				<ul>
+					<a href="/user/info/"><li>个人信息</li></a>
+					<a href="/user/order1/"><li>全部订单</li></a>
+					<a href="/user/site/"><li>收货地址</li></a>
+					<a href="/star/1/"><li class="active">我的收藏</li></a>
+					<a href="/user/history1/"><li>浏览记录</li></a>
+					<a href="user_center_site.html"><li>联系我们</li></a>
+				</ul>
+			</div>
+			<div class="right_content clearfix">
+				<div class="info_con clearfix">
+					<div class="common_title_con">
+						<h3 class="common_title">我的收藏</h3>
+					</div>
+					<ul class="star_goods_list">
+						{% for g in page %}
+						<li class="star_goods" id="{{ g.goods.id }}">
+							<div class="img_con" id="img_con">
+								<a href="/{{ g.goods.id }}/"><img src="/static/{{ g.goods.gpic }}">
+									<div class="button_con">
+										<a href="javascript:;" class="add_cart3" id="add_cart">加入购物车</a>
+										<a href="javascript:star_del({{ g.id }});" class="del_star" id="del_star">删除</a>
+									</div>
+								</a>
+							</div>
+							<h4><a href="/{{ g.goods.id }}/" title="{{ g.goods.gtitle }}">{{ g.goods.gtitle }}</a></h4>
+							<p class="author">
+								<span>{{ g.goods.gauthor }}</span>
+							</p>
+							<p class="price">
+								<span class="price_l"><em>￥{{ g.goods.gsellprice }}</em></span>
+								<span class="price_r"><del>￥{{ g.goods.gprice }}</del></span>
+							</p>
+						</li>
+						{% endfor %}
+					</ul>
+					<div class="pagenation">
+						{% if page.has_previous %}
+						<a href="/star/{{ page.previous_page_number }}/"><上一页</a>
+						{% endif %}
+						{% for pindex in paginator.page_range %}
+						{% if pindex == page.number %}
+						<a href="#" class="active">{{ pindex }}</a>
+						{% else %}
+						<a href="/star/{{ pindex }}/">{{ pindex }}</a>
+						{% endif %}
+						{% endfor %}
+						{% if page.has_next %}
+						<a href="/star/{{ page.next_page_number }}/">下一页></a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock content %}

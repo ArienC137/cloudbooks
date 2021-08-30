@@ -7,6 +7,7 @@ from cb_user.models import UserInfo
 from cb_cart.models import *
 from datetime import datetime
 from decimal import Decimal
+import pdb
 
 # Create your views here.
 @user_decorator.login
@@ -14,8 +15,10 @@ def order(request):
     # 查询用户对象
     user = UserInfo.objects.get(id=request.session['user_id'])
     # 根据提交查询购物车信息
+    # pdb.set_trace()
     get = request.GET
     cart_ids = get.getlist('cart_id')
+    # cart_ids = request.GET.getlist('cart_id')
     cart_ids1 = [int(item) for item in cart_ids]
     carts = CartInfo.objects.filter(id__in=cart_ids1)
     context = {'title':'提交订单','carts':carts,'user':user,'cart_ids':','.join(cart_ids)}

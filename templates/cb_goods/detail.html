@@ -37,7 +37,7 @@
 		$('#add_cart').click(function(){
 			// 判断是否登录：因为视图中的add函数中需要获取session，所以需要先登录才能得到值
 			if($('.login_btn').text().indexOf('登录')>=0){
-				alert('请先登录后再购买');
+				alert('请先登录后再购买！');
 				location.href = '/user/login/'
 				return;
 			}
@@ -52,6 +52,24 @@
 			num = parseInt($('.num_show').val());
 			$.get('/cart/add{{ g.id }}_'+num+'/',function(data){
 				$('#show_count').text(data.count);
+			});
+			alert('添加成功！');
+		});
+		// 添加到我的收藏
+		$('#add_star').click(function(){
+			// 判断是否登录：因为视图中的add函数中需要获取session，所以需要先登录才能得到值
+			if($('.login_btn').text().indexOf('登录')>=0){
+				alert('请先登录后再收藏！');
+				location.href = '/user/login/'
+				return;
+			}
+			// 异步（发送异步请求）
+			$.get('/star/add{{ g.id }}/',function(data){
+				if(data.count==1){
+					alert('已在我的收藏中！');
+					return;
+				}
+				alert('收藏成功！');
 			});
 		});
 	});

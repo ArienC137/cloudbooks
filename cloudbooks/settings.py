@@ -24,9 +24,9 @@ SECRET_KEY = 'epv2ydro4#@!%78c_tlq3n%wk)jt*pc9^vt4lb@y7wfgr8a9pt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'cb_goods',
     'cb_cart',
     'cb_order',
+    'cb_star',
     'tinymce',
     'haystack',
 ]

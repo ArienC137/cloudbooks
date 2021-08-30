@@ -1207,29 +1207,32 @@ a.active{
     line-height:30px;
     margin-left:50px;
 }
-.history_goods_list{
+.history_goods_list,.star_goods_list{
 	float:left;
     width:980px;
 	margin:8px auto;
 }
-.history_goods_list li{
+.history_goods_list li,.star_goods_list li{
 	width:196px;
 	float:left;
 	margin-bottom:10px;
 }
-.history_goods_list li img{
+.img_con{
+    position:relative;
+}
+.history_goods_list li img,.star_goods_list li img{
     width:150px;
     height:150px;
     display:block;
     margin:10px auto;
     border:1px solid #ddd;
 }
-.history_goods_list li h4{
+.history_goods_list li h4,.star_goods_list li h4{
     width:150px;
     margin:0 auto;
     text-align:left;
 }
-.history_goods_list li h4 a{
+.history_goods_list li h4 a,.star_goods_list li h4 a{
     font-weight:normal;
     color:#000;
     display:block;
@@ -1238,12 +1241,37 @@ a.active{
     white-space:nowrap;
     text-overflow:ellipsis;
 }
-.history_goods_list li h4 a:hover{
+.history_goods_list li h4 a:hover,.star_goods_list li h4 a:hover{
     text-decoration:underline;
 }
-.history_goods_list .author{
+.history_goods_list .author,.star_goods_list .author{
     margin:0 auto;
     text-align:left;
+}
+.common_title_con{
+    background-color:rgba(255,255,255,0.5);
+}
+.button_con{
+    position:absolute;
+    bottom:0;
+    left:22px;
+    width:152px;
+    height:40px;
+    padding-top:20px;
+    background-color:rgba(0,0,0,0.5);
+    display:none;
+    z-index:9;
+}
+.button_con .add_cart3,.button_con .del_star{
+    width:80px;
+    height:20px;
+    font:14px/20px 'Microsoft Yahei';
+    color:#fff;
+    text-align:center;
+    margin-right:5px;
+}
+.button_con .add_cart3:hover,.button_con .del_star:hover{
+    color:red;
 }
 /*分页样式*/
 .pagenation{
@@ -1268,6 +1296,11 @@ a.active{
     color:#fff;
 }
 /*购物车样式*/
+.total_count_con{
+	width:1000px;
+    margin:0 auto;
+    margin-bottom:40px;
+}
 .total_count{
 	width:1000px;
     margin:0 auto;
@@ -1321,6 +1354,7 @@ a.active{
     line-height:120px;
     float:left;
     text-align:center;
+    overflow:hidden;
 }
 .cart_list_td .col01{
     width:4%;

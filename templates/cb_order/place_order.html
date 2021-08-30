@@ -50,25 +50,25 @@
                 <li class="col02">单价(元)</li>
                 <li class="col03">数量</li>
                 <li class="col04">金额(元)</li>
-<!--            </ul>-->
-<!--            {% for cart in carts %}-->
-<!--            <ul class="goods_list_td clearfix">-->
-<!--                <li class="col01">{{ forloop.counter }}</li>-->
-<!--                <li class="col02"><img src="/static/{{ cart.goods.gpic }}"></li>-->
-<!--                <li class="col03">{{ cart.goods.gtitle }}</li>-->
-<!--                <li class="col04">{{ cart.goods.gsellprice }}</li>-->
-<!--                <li class="col05">{{ cart.count }}</li>-->
-<!--                <li class="col06">14.00</li>-->
-<!--            </ul>-->
-<!--            {% endfor %}-->
+            </ul>
+            {% for cart in carts %}
             <ul class="goods_list_td clearfix">
-                <li class="col01">{{ user }}</li>
-                <li class="col02"><img src="/static/{{ carts.goods.gpic }}"></li>
-                <li class="col03">{{ cart_ids }}</li>
-                <li class="col04">{{ carts }}</li>
-                <li class="col05">{{ user }}</li>
+                <li class="col01">{{ forloop.counter }}</li>
+                <li class="col02"><img src="/static/{{ cart.goods.gpic }}"></li>
+                <li class="col03">{{ cart.goods.gtitle }}</li>
+                <li class="col04">{{ cart.goods.gsellprice }}</li>
+                <li class="col05">{{ cart.count }}</li>
                 <li class="col06">14.00</li>
             </ul>
+            {% endfor %}
+<!--            <ul class="goods_list_td clearfix">-->
+<!--                <li class="col01">{{ user }}</li>-->
+<!--                <li class="col02"><img src="/static/{{ carts.goods.gpic }}"></li>-->
+<!--                <li class="col03">{{ cart_ids }}</li>-->
+<!--                <li class="col04">{{ carts }}</li>-->
+<!--                <li class="col05">{{ user }}</li>-->
+<!--                <li class="col06">14.00</li>-->
+<!--            </ul>-->
         </div>
         <h3 class="common_title2">总金额结算</h3>
         <div class="common_list_con clearfix">

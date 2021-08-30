@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from .models import *
+from cb_star.models import *
 from cb_user import user_decorator
 
 # Create your views here.
@@ -66,6 +67,36 @@ def delete(request,cart_id):
         data = {'ok':0}
 
     return JsonResponse(data)
+
+@user_decorator.login
+def add_star(request,gid,cart_id):
+    uid = request.session['user_id']
+    gid = int(gid)
+    # 查询我的收藏中是否已经有此商品，没有则新增，并从购物车中删除此商品
+    stars = StarInfo.objects.filter(user_id=uid,goods_id=gid)
+    if len(stars) >= 1:
+        # 获取此商品
+        star = stars[0]
+        # 当前用户收藏的此商品的数量
+        count = 1
+        state = 'ok'
+    else:
+        # 新建一个我的收藏对象
+        star = StarInfo()
+        # 赋值
+        star.user_id = uid
+        star.goods_id = gid
+        count = 0
+        cart = CartInfo.objects.get(pk=int(cart_id))
+        # 从数据库中删除
+        cart.delete()
+        state = 'ok'
+
+    star.save()
+    # 判断是ajax请求直接添加商品到我的收藏
+    if request.is_ajax():
+        # 返回当前用户收藏的此商品的数量
+        return JsonResponse({'count':count,'state':state})
 
 
 

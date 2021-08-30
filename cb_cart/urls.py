@@ -6,4 +6,5 @@ urlpatterns = [
     re_path(r'^add(\d+)_(\d+)/$',views.add),
     re_path(r'^edit(\d+)_(\d+)/$',views.edit),
     re_path(r'^delete(\d+)/$',views.delete),
+    re_path(r'^add_star(\d+)_(\d+)/$',views.add_star),
 ]
